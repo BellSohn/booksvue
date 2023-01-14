@@ -10,12 +10,12 @@ exports.authenticated = function(req,res,next){
             message:'request has not the authorization header'
         });
     }
-    //limpiar el token
+    //clean the tokken
     var tokken = req.headers.authorization.replace(/['"]+/g,'');
     try{
-        //decodificar el tokken
+        //decode the tokken
         var payload = jwt.decode(tokken,secret);
-        //comprobar si el tokken ha expirado
+        //check if the tokken has expired
         if(payload.exp <= moment().unix()){
             return res.status(404).send({
                 message:'El tokken ha expirado'
