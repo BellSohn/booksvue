@@ -6,9 +6,7 @@ var UserController = require('../controllers/user');
 //Middlewares
 var md_auth = require('../middlewares/authenticated');
 
-//Para cargar archivos de imagen
-//var fileUpload = require('express-fileupload');
-//var md_upload = fileUpload();
+//to load image files
 var multipart = require('connect-multiparty');
 var multipartMiddleware = multipart({uploadDir:'./uploads/users'});
 
