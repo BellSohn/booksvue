@@ -31,7 +31,7 @@ probandoPost:function(req,res){
 saveUser:function(req,res){
 
     var params = req.body;
-    console.log(params);
+    
     var validate_name = !validator.isEmpty(params.name);
     var validate_surname = !validator.isEmpty(params.surname);
     var validate_email = !validator.isEmpty(params.email) && validator.isEmail(params.email);
@@ -198,8 +198,7 @@ loginData:function(req,res){
 },
 
 updateUser:function(req,res){
-    var reqParams = req.body;
-    //console.log(reqParams);
+    var reqParams = req.body;    
 	
     try{
         var validate_name = !validator.isEmpty(reqParams.name);
@@ -214,7 +213,7 @@ updateUser:function(req,res){
     }
     
     var userId = req.user.sub;
-	//console.log(userId);
+	
 	
 	
     if(validate_name && validate_surname && validate_email && validate_address){
@@ -225,7 +224,7 @@ updateUser:function(req,res){
 			address:reqParams.address,
 			age:reqParams.age
 		}
-		//console.log(update);
+		
 		
         if(req.user.email != reqParams.email){
 
@@ -241,7 +240,7 @@ updateUser:function(req,res){
                     });
 
                 }else{
-                    // Article.findByIdAndUpdate(articleId,params,{new:true},(err,updatedArticle)=>{
+                    
                     User.findOneAndUpdate({_id:userId},update,{new:true},(err,userUpdated)=>{
                         if(err){
                             return res.status(500).send({
@@ -296,14 +295,12 @@ uploadAvatar:function(req,res){
 			message:fileName
 		});
 	}
-	var filePath = req.files.file0.path;
-	//console.log(filePath);
-	var file_split = filePath.split('\\');
-	//console.log(file_split);
-	var file_name = file_split[2];
-	//console.log(file_name);
+	
+	var filePath = req.files.file0.path;	
+	var file_split = filePath.split('\\');	
+	var file_name = file_split[2];	
 	var file_ext = file_name.split('\.')[1];
-	//console.log(file_ext);
+	
 	if(file_ext != 'jpg' && file_ext != 'png' && file_ext != 'gif' && file_ext != 'jpeg'){
 			fs.unlink(filePath,(err)=>{
 				return res.status(200).send({
@@ -349,50 +346,6 @@ uploadAvatar:function(req,res){
 	
 },
 
-/*uploadAvatar:function(req,res){
-
-    var EdFile = req.files.file0;
-    var fileName = EdFile.name;
-    var mimeType = EdFile.mimetype;
-    var fileType = mimeType.split('/')[1];
-    console.log(fileType);
-	
-    EdFile.mv(`./uploads/users/${fileName}`,err =>{
-        if(err){
-            return res.status(500).send({
-                message:err
-            });
-        }
-        if(fileType != 'png' && fileType != 'jpg' && fileType != 'jpeg' && fileType != 'gif'){
-            fs.unlink(fileName,(err)=>{
-                return res.status(200).send({
-                    status:'error',
-                    message:'file extension is not valid'
-                });
-            });
-
-        }else{
-
-            var userId = req.user.sub;
-            User.findOneAndUpdate({_id:userId},{image:fileName},{new:true},(err,userUpdated)=>{
-                if(err || !userUpdated){
-                    return res.status(500).send({
-                        status:'error',
-                        message:'Error while trying to upload file'
-                    });
-                }
-                return res.status(200).send({
-                    status:'success',
-                    userUpdated
-                });
-            });
-
-        }
-
-    });
-    
-},
-*/
 
 getImage:function(req,res){
 
