@@ -19,7 +19,7 @@ saveloan:function(req,res){
     var reqParams = req.body;
     var user = req.user;
     var bookId = req.params.id;
-    //console.log(reqParams);
+    
     
     var validator_loandate = !validator.isEmpty(reqParams.loandate) && validator.isDate(reqParams.loandate);    
     var validator_returndate = !validator.isEmpty(reqParams.returndate) && validator.isDate(reqParams.returndate);  
@@ -46,7 +46,7 @@ saveloan:function(req,res){
                 author:seekBook.author,
                 editorial:seekBook.editorial,
                 year:seekBook.year,
-				_id:seekBook._id
+		_id:seekBook._id
             }
             loan.books.push(book);
             loan.save((err,loanStored)=>{
@@ -103,19 +103,15 @@ updateLoanReturnDate:function(req,res){
     var params = req.body;
 	
 	var returnD = params.returndate;
-	var dateElements = returnD.split("-");
-	//console.log(dateElements);
+	var dateElements = returnD.split("-");	
 	var year = dateElements[0];
 	var month = dateElements[1];
 	var returnDay = dateElements[2];
 	var day = returnDay.slice(0,2);
 	var returndate = `${year}`+'-'+`${month}`+'-'+`${day}`;
-	//console.log(year+"-"+month+"-"+day);
-	//console.log(returndate);
-	
+		
     try{
-        var validate_returndate = !validator.isEmpty(params.returndate);
-        //var validate_status = !validator.isEmpty(params.status);
+        var validate_returndate = !validator.isEmpty(params.returndate);        
     }catch(error){
         return res.status(200).send({
             message:'error en los datos'
@@ -124,11 +120,10 @@ updateLoanReturnDate:function(req,res){
 
     if(validate_returndate){
 
-        var update = {
-            //returndate:params.returndate,
-			returndate:returndate
-            
+        var update = {            
+	returndate:returndate            
         }
+	
         Loan.findOneAndUpdate({_id:loanId},update,{new:true},(err,loanUpdated)=>{
             if(err){
                 return res.status(500).send({                    
@@ -156,13 +151,9 @@ updateLoanReturnDate:function(req,res){
 
 getLoans:function(req,res){
 	
-	var options = {
-        //sort:{loandate:-1},
-		populate:'books',
-        //limit:2,
-        //page:1
-
-	}
+	var options = {        
+		populate:'books',       
+       	}
 	
     Loan.paginate({},options,(err,loans)=>{
 		if(err){
@@ -186,61 +177,61 @@ getLoans:function(req,res){
     
 },
 
-searchLoan:function(req,res){
+	searchLoan:function(req,res){
 
-    var busqueda = req.params.search;
+	    var busqueda = req.params.search;
 
-    Loan.find({
-        loandate:{busqueda}
-    })
-    .populate('user')    
-    .exec((err,loans)=>{
-        if(err){
-            return res.status(500).send({
-                status:'error',
-                message:'Error en la busqueda',                
-            });
-        }
-        if(!loans){
-            return res.status(404).send({
-                status:'error',
-                message:'No se han encontrado datos'
-            });
-        }
-        return res.status(200).send({
-            status:'success',
-            loans
-        });
-    });
-
-    
-},
-
-getLoan:function(req,res){
-    var loanId = req.params.id;
-	Loan.findById(loanId)
-	.populate('user')
-	.populate('books')
-	.exec((err,loan)=>{
+	    Loan.find({
+		loandate:{busqueda}
+	    })
+	    .populate('user')    
+	    .exec((err,loans)=>{
 		if(err){
-			return res.status(500).send({
-				status:'error',
-				message:'Error al sacar los prestamos'
-			});
+		    return res.status(500).send({
+			status:'error',
+			message:'Error en la busqueda',                
+		    });
 		}
-		if(!loan){
-			return res.status(404).send({
-				status:'error',
-				message:'No hay prestamos'
-			});
+		if(!loans){
+		    return res.status(404).send({
+			status:'error',
+			message:'No se han encontrado datos'
+		    });
 		}
 		return res.status(200).send({
-			status:'success',
-			loan
+		    status:'success',
+		    loans
 		});
-	});
-    
-}
+	    });
+
+
+	},
+
+	getLoan:function(req,res){
+	    var loanId = req.params.id;
+		Loan.findById(loanId)
+		.populate('user')
+		.populate('books')
+		.exec((err,loan)=>{
+			if(err){
+				return res.status(500).send({
+					status:'error',
+					message:'Error al sacar los prestamos'
+				});
+			}
+			if(!loan){
+				return res.status(404).send({
+					status:'error',
+					message:'No hay prestamos'
+				});
+			}
+			return res.status(200).send({
+				status:'success',
+				loan
+			});
+		});
+
+	}
 
 
 
