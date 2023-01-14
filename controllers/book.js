@@ -18,7 +18,7 @@ savebook:function(req,res){
 
       var reqParams  = req.body;
       var user = req.user;
-      //console.log(reqParams);  
+      
       if(user.role != 'admin' || user.role == undefined){
           return res.status(404).send({
               message:'Only administrators are allowed to store books'
@@ -36,7 +36,7 @@ savebook:function(req,res){
 
         var book = new Book();
 
-        //setear el objeto
+        //set the object
         book.isbn = reqParams.isbn;
         book.title = reqParams.title;
         book.author = reqParams.author;
@@ -46,7 +46,7 @@ savebook:function(req,res){
         book.image = null;
 		book.loaned = false;
 
-        //ver si ya existe
+        //check if it exists
         Book.findOne({isbn:reqParams.isbn},(err,issetBook)=>{
             if(err){
                 return res.status(500).send({
@@ -54,7 +54,7 @@ savebook:function(req,res){
                 });
             }
             if(!issetBook){
-                //guardamos el libro
+                //store the book in db
                 book.save(function(err,bookStored){
                     if(err || !bookStored){
                         return res.status(500).send({
@@ -90,16 +90,15 @@ updateBook:function(req,res){
 
     var bookId = req.params.id;
     var params = req.body;
-	//console.log(params.title);
+	
 	
 	
     try{
-		var validate_isbn = !validator.isEmpty(params.isbn);
+	var validate_isbn = !validator.isEmpty(params.isbn);
         var validate_title = !validator.isEmpty(params.title);
         var validate_author = !validator.isEmpty(params.author);
-		var validate_editorial = !validator.isEmpty(params.editorial);
-        //var validate_year = !validator.isEmpty(params.year);
-        //var validate_pages = !validator.isEmpty(params.pages);
+	var validate_editorial = !validator.isEmpty(params.editorial);        
+        
     }catch(err){
         return res.status(200).send({
 			status:'error',
@@ -109,10 +108,10 @@ updateBook:function(req,res){
 
     if(validate_isbn && validate_title && validate_author && validate_editorial ){
             var update = {
-				isbn:params.isbn,
+		isbn:params.isbn,
                 title:params.title,
                 author:params.author,
-				editorial:params.editorial,
+		editorial:params.editorial,
                 year:params.year,
                 pages:params.pages
             }
@@ -143,24 +142,13 @@ uploadBookImage:function(req,res){
         return res.status(200).send({
             message:fileName
         })
-    }
-	//console.log(req.files.file0.path);
+    }	
 	var filePath = req.files.file0.path;
-	//console.log(filePath);
-	//console.log(filePath);
-	var file_split = filePath.split('\\');
-	//console.log(file_split);
-	var file_name = file_split[2];
-	//console.log(file_name);
-	var ext_split = file_name.split('\.');
-	//console.log(ext_split);
+	var file_split = filePath.split('\\');	
+	var file_name = file_split[2];	
+	var ext_split = file_name.split('\.');	
 	var file_ext = ext_split[1];
-	//console.log(file_ext);
-    
-    /*var filePath = req.files.file0.path;	
-    var fileSplit = filePath.split("\\");	
-    var fileName = fileSplit[2];	
-    var fileExt = fileName.split(".")[1];*/
+        
     
     if(file_ext != 'jpg' && file_ext != 'png' && file_ext != 'gif' && file_ext != 'jpeg'){
         fs.unlink(filePath,(err)=>{
@@ -172,8 +160,7 @@ uploadBookImage:function(req,res){
         });
     }else{
         var bookId = req.params.id;
-        if(bookId){
-			//console.log(fileName);
+        if(bookId){			
             Book.findByIdAndUpdate(bookId,{image:file_name},{new:true},(err,bookUpdated)=>{
                 if(err){
                     return res.status(500).send({
@@ -199,53 +186,9 @@ uploadBookImage:function(req,res){
     
 },
 
-/*
-uploadBookImage:function(req,res){
 
-    var bookId = req.params.id;
-    var EdFile = req.files.file0;
-    
-    var fileName = EdFile.name;
-    var fileType = EdFile.mimetype;
-    var fileExt = fileType.split('/')[1];
-    
-    EdFile.mv(`./uploads/books/${fileName}`,err=>{
-        if(err){
-            return res.status(500).send({
-                message:err
-            });
-        }
-        if(fileExt != 'jpg' && fileExt != 'png' && fileExt != 'jpeg' && fileExt != 'gif'){
-            fs.unlink(fileName,(err)=>{
-                return res.status(200).send({
-                    status:'error',
-                    message:'file extension is not valid'
-                })
-            });
-
-        }else{            
-            Book.findOneAndUpdate({_id:bookId},{image:fileName},{new:true},(err,bookUpdated)=>{
-                if(err || !bookUpdated){
-                    return res.status(500).send({
-                        status:'error',
-                        message:'Error al intentar subir la imagen del libro'
-                    });
-                }
-                return res.status(200).send({
-                    status:'success',
-                    bookUpdated
-                });
-
-            });
-
-        }
-    });
-   
-},
-*/
 getBookImage:function(req,res){
-
-    //var bookId = req.params.id;
+    
     var imageName = req.params.filename;
     var pathFile = 'uploads/books/'+imageName;
     fs.exists(pathFile,(exists)=>{
@@ -324,10 +267,10 @@ setBookAsFree:function(req,res){
 
 search:function(req,res){
 
-  //sacar el string a buscar
+  //get the string we´re looing for
   var searchString = req.params.search;
 
-  //find, pero con un operador or
+  //find, but with an "or" operator
   Book.find({
       "$or":[
       {"title":{"$regex":searchString,"$options":"i"}},
@@ -350,7 +293,7 @@ search:function(req,res){
                   message:'No hay temas disponibles'
               });
           }
-          //devolver el resultado
+          //return result
            return res.status(200).send({
               status:'success',
               books
