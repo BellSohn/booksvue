@@ -20,7 +20,7 @@ returndate:{type:Date,default:Date.now},
 status:String
 });
 
-//cargar paginacion
+//load pagination
 LoanSchema.plugin(mongoosePaginate);
 
 module.exports = mongoose.model('Loan',LoanSchema);
