@@ -6,12 +6,11 @@ var BookController = require('../controllers/book');
 //Middleware
 var md_auth = require('../middlewares/authenticated');
 
-//Para cargar archivos de imagen
+//to load image files
 var fileUpload = require('express-fileupload');
 var md_upload = fileUpload();
 
 var multipart = require('connect-multiparty');
-//var multipartMiddleware = multipart({uploadDir:'./uploads'});
 var multipartMiddleware = multipart({uploadDir:'./uploads/books'});
 
 var router = express.Router();
