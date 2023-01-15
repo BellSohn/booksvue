@@ -15,7 +15,7 @@ var BookSchema = Schema({
 	loaned:Boolean
 });
 
-//load paginacion
+//load pagination
 BookSchema.plugin(mongoosePaginate);
 
 module.exports = mongoose.model('Book',BookSchema);
