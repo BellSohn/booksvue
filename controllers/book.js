@@ -44,7 +44,7 @@ savebook:function(req,res){
         book.year = reqParams.year;
         book.pages = reqParams.pages;
         book.image = null;
-		book.loaned = false;
+	book.loaned = false;
 
         //check if it exists
         Book.findOne({isbn:reqParams.isbn},(err,issetBook)=>{
@@ -235,7 +235,7 @@ setBookAsLent:function(req,res){
 			});
 		}
 		return res.status(200).send({
-			//book:book.loaned = true,
+			
 			book
 		});
 	});	
@@ -267,7 +267,7 @@ setBookAsFree:function(req,res){
 
 search:function(req,res){
 
-  //get the string we´re looing for
+  //get the string we are looking for
   var searchString = req.params.search;
 
   //find, but with an "or" operator
